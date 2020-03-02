@@ -20,7 +20,7 @@
 #define AZ_ACCURACY 2                                                    // точность установки азимута
 
 String ssid     = "DIR-320NRU";
-String password = "58563694";
+String password = "12345678";
 
 int out_pins[] = {PIN_PRIVOD_LEFT, PIN_PRIVOD_RIGHT, PIN_LED_WIFI_STATUS, PIN_LED_LOW_RSSI};
 
@@ -67,7 +67,7 @@ void setup() {
     WiFi.mode(WIFI_AP_STA);
     Serial.println(F("----"));
     Serial.println(F("\nStarting AP"));
-    WiFi.softAP(F("ESPAP"), F("87654321"));
+    WiFi.softAP(F("ESPAP"), F("87654321"));                             // SSID и пароль точки доступа - ESPAP, 87654321
     IPAddress myIP = WiFi.softAPIP();
     Serial.print(F("AP IP address: "));
     Serial.println(myIP);
