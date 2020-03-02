@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Azimuth pointer by RA4NHY</title>
+  <style type="text/css">
+   .parent > div {
+        float: left;
+       /* width: 30%; */ 
+        margin-right: 2%;
+        padding: 5px;
+        border: 1px solid #ccc;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+	.btnblock{
+	    width: 300px;
+	}
+   .rotatebtns{
+        width: 50px;
+    }
+   .azimuthmap{
+        background-image: url("map1.png");
+		height: 557px;
+		width: 553px;
+   }
+   .picture {
+    margin-left: 48.5%;
+	margin-top: 13.5%;
+	transform-origin: center center;
+	transform: rotate(0deg);
+   }
+   .toggle {background:#F6F6F6;margin-bottom: 15px;	border: 1px solid #E1E1E1;border-bottom: 1px solid #979797;padding: 5px 10px;border-radius: 5px;-moz-border-radius: 5px;-webkit-border-radius: 5px;position: relative;box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);-moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);-webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);	}
+   .button2 {display: inline-block;  color: #000000;  font-weight: 700;  text-decoration: none;  user-select: none;  padding: 5px;  outline: none;  border: 1px solid #000000;  border-radius: 4px;  transition: 0.2s;}
+   .button2:hover { background: #CD2122;color: #FFFFFF; }
+   .button2:active { background: #FFFFFF; }
+   .button3 {background:#CD2122; border:1px solid #000000; cursor:pointer; color:#FFFFFF; padding:1; font-size:12px; border-radius: 2px}
+   .button3:hover {background:#000000; color:#FFFFFF;border:1px solid #000000}
+
+  </style>
+ </head>
+ <body>
+ <script type="text/javascript" src="qth.js"></script>
+  <script>
+    var azTmp;
+	var azimuth;
+	
+	function getData(){
+	    var req = new XMLHttpRequest();
+        req.open('GET', '/data', true); 
+        req.onreadystatechange = function() {
+        if (req.readyState == 4) {
+			var data = JSON.parse(req.responseText);
+			document.getElementById("current_azimuth").innerHTML = data.curazimuth;
+			azimuth = data.curazimuth;
+			document.getElementById("RSSI").innerHTML = data.rssi;
+			document.getElementById("current_voltage").innerHTML = data.curvoltage;
+			document.getElementById("cli_ip_addr").innerHTML = data.clientipaddr;
+			if (data.antrotate == 1){
+			    document.getElementById("isrotate").innerHTML = "Антенна вращается!! -> " + azTmp;
+			}
+			else {
+			    document.getElementById("isrotate").innerHTML = "Антенна не вращается.";
+			}
+			var transformStr = "rotate(" + data.curazimuth + "deg)";
+			document.getElementById("arrow").style.transform = transformStr;
+	        }
+	    }
+		req.send(null);
+	}
+	setInterval(getData, 500);
+	
+	function setAzimuth(azimuth){
+	    azTmp = azimuth;
+	    if ((azTmp > 0) && (azTmp <= 360 ) ){ 
+	        var request = new XMLHttpRequest();
+		    var req_str = "/setazimuth?azimuth=" + azimuth;
+		    request.open('GET', req_str, true );
+		    request.send(null);
+		}
+		else alert("Значение азимута должно быть от 1 до 360!");
+	}
+	
+	function stop() {
+	    var req = new XMLHttpRequest();
+		req.open('GET', "/stopprivod", true );
+        req.onreadystatechange = function() {
+        if (req.readyState == 4) {
+		    document.getElementById("status").innerHTML = req.responseText;
+			setTimeout(offmsg = function(){document.getElementById("status").innerHTML = " "}, 4000);
+	        }
+	    }
+		req.send(null);
+	}
+  </script>
+ 
+  <div align="center">
+   <h2>Азимут = <span id="current_azimuth">0</span>°</h2>
+   <h2><span id="isrotate">Антенна не вращается</span></h2>
+  </div>
+  <div class="parent" >
+      <div align="right" class="btnblock">
+	    <input class="rotatebtns" type="button" value="-2°" onclick='setAzimuth(azimuth - 2)'><br>
+		<input class="rotatebtns" type="button" value="-5°" onclick='setAzimuth(azimuth - 5)'><br>
+		<input class="rotatebtns" type="button" value="-10°" onclick='setAzimuth(azimuth - 10)'>
+      </div>
+      <div class="azimuthmap">
+		  <img class="picture" src="arrow.png" height="400" id="arrow">
+      </div>
+      <div class="btnblock">
+	    <input class="rotatebtns" type="button" value="+2°" onclick='setAzimuth(azimuth + 2)'><br>
+		<input class="rotatebtns" type="button" value="+5°" onclick='setAzimuth(azimuth + 5)'><br>
+		<input class="rotatebtns" type="button" value="+10°" onclick='setAzimuth(azimuth +10)'>
+      </div>
+   </div>
+   
+   <div style="width:100%; height:1px; clear:both;"></div> <!-- выравниваем без обтекания -->
+   
+   <div align="center">
+       <p><b>Установить азимут:</b>
+       <input id="neededazimuth" type="text" size="5" pattern="[0-9]{1,3}">
+	   <input type="submit" value="Повернуть" onclick='setAzimuth(document.getElementById("neededazimuth").value)'>
+	   <input type="submit" value="STOP!" onclick='stop()'>
+       </p>
+	   
+	   <table summary="Main table for page layout" align="center">
+       <tbody>
+        <tr valign="top">
+         <td>
+         <div class="toggle">
+         <form name="myform">
+          <table summary="Table for form elements">
+          <tbody>
+           <tr>
+            <td width="37%">Ваш локатор</td>
+            <td class="c" width="28%"><input class="pre" onkeypress="return numlet(event)" type="text" name="loc1" size="16" maxlength="10"></td>
+            <td><input type="reset" value="Сброс" class="button3"></td>
+           </tr>
+           <tr>
+            <td>корреспондента</td>
+            <td class="c"><input class="pre" onkeypress="return numlet(event)" onkeyup='onTypeLoc()' type="text" name="loc2" size="16" maxlength="10"></td>
+            <td>
+            <p align="center"><input onclick="find_dist()" type="button" value="Подсчитать" class="button3"></p></td>
+           </tr>
+          </tbody>
+          </table>
+          <table summary="Results" width="442">
+           <tbody>
+            <tr>
+             <td width="105">&nbsp;</td>
+             <td class="d">Азимут</td>
+             <td class="d">Расстояние, км</td>
+            </tr>
+            <tr>
+             <td width="105">&nbsp;</td>
+             <td class="c"><input class="code" type="text" name="rl_deg" readonly="readonly" size="6"></td>
+             <td class="c"><input class="code" type="text" name="rl_km" readonly="readonly" size="8"></td>
+            </tr>
+           </tbody>
+          </table>
+          </form></div>
+          
+         </td></tr></tbody></table>
+   </div>
+   <div>
+   <table>
+    <tbody>
+	 <tr>
+	  <td><a href="/calibration.html">Установки</a></td><td>RSSI=<span id="RSSI"></span></td><td><span id="cli_ip_addr"></td><td></span>V=<span id="current_voltage">&nbsp;</span></td><td><span id="status">&nbsp;</span></td>
+	 </tr>
+	</tbody> 
+   </table>
+   </div>
+ </body>
+</html>

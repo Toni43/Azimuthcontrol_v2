@@ -1,0 +1,377 @@
+
+<!-- saved from url=(0023)http://22dx.ru/qth.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style type="text/css">
+body {background:#FFF url(images/patterns/body-bg13.png) top center;
+	color: #333;
+	font-family: Tahoma,Arial,Verdana,sans-serif;
+	font-size: 13px;}
+	p,h1 	{ margin: 0px 10px 10px 10px;}
+	h1, h2, h3,h4, h5, h6 { font-weight:normal;}  
+	hr		{width: 80%;}
+	input	{ font-family: verdana; font-size: 8pt;}
+	select	{ font-family: verdana; font-size: 8pt;}
+	td.c	{ text-align: center}
+	td.d	{ text-align: center; font-size:12px;}
+	td.calc { background-color: #cccccc;}
+	tr.e	{ color: black; font-weight: bold; padding-left: 25px;}
+	div.main {border:0px solid #000; background:#dddddd;}
+
+.toggle {background:#F6F6F6;margin-bottom: 15px;	border: 1px solid #E1E1E1;border-bottom: 1px solid #979797;padding: 5px 10px;border-radius: 5px;-moz-border-radius: 5px;-webkit-border-radius: 5px;position: relative;box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);-moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);-webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);	}
+.button2 {display: inline-block;  color: #000000;  font-weight: 700;  text-decoration: none;  user-select: none;  padding: 5px;  outline: none;  border: 1px solid #000000;  border-radius: 4px;  transition: 0.2s;}
+.button2:hover { background: #CD2122;color: #FFFFFF; }
+.button2:active { background: #FFFFFF; }
+.button3 {background:#CD2122; border:1px solid #000000; cursor:pointer; color:#FFFFFF; padding:1; font-size:12px; border-radius: 2px}
+.button3:hover {background:#000000; color:#FFFFFF;border:1px solid #000000}
+.button4 {background:#F6F6F6; border: 2px solid #A3A3A3; cursor:pointer; color:#000000; padding:1; font-size:12px; border-radius: 3px; transition: 0.2s}
+.button4:hover {background:#FFFFFF; color:#CD2122;border:2px solid #CD2122}
+.button4:active {background:#CD2122; color:#FFFFFF;border:2px solid #CD2122}
+
+pre ,code{
+	direction:ltr;
+	background:url(images/code-bg.png);
+	font: 11px/19px 'andale mono', 'lucida console', monospace;
+	padding: 3px;
+	display: block;
+	overflow-x: visible;
+	overflow-y: hidden;
+	margin: 0 0 20px 0;
+	color: #666;
+	border-top: 1px solid #E1E1E1;
+	border-left: 1px solid #E1E1E1;
+	border-bottom: 1px solid #F0F0F0;
+	border-right: 1px solid #F0F0F0;
+}
+</style>
+<noscript>
+<h2 class="f">This browser has javascript turned off</h2>
+<h3>This program will not work until Javascript has been enabled</h3>
+</noscript>
+
+<script type="text/javascript" language="javascript">
+<!--
+//======================================================================
+// November 2005 changes, ver 4.01
+// added numonly and numlet functions to stop entry of invalid characters
+//
+// ======================================================================
+var deg2rad = Math.PI / 180;
+var rad2deg = 180.0 / Math.PI;
+var pi = Math.PI;
+var locres = 0; //6 locator characters
+domain = 'cix.co.uk';
+user = 'hzk';
+
+onload = function()
+{
+document.myform.reset();
+//document.myform.loc1.focus();
+}
+
+function onTypeLoc()
+{
+   console.log(document.myform.loc2.value.length);
+  if (document.myform.loc2.value.length >= 6)
+    {
+	  find_dist();
+	}  
+}
+
+//-------------------------------------------------------------------
+// this function allows only numbers in fields
+function numonly(ev)
+{
+  var key;
+  var keychar;
+  if (window.event)
+	key = window.event.keycode;
+  else if (ev)
+	key = ev.which;
+  else return true;
+  keychar = String.fromCharCode(key);
+  if ((key==null) || (key==0) || (key==8) || (key==9) || (key==13) || (key==27))
+	return true;
+  else if (((".0123456789").indexOf(keychar) > -1))
+	return true;
+  else
+	return false;
+}
+//-------------------------------------------------------------------
+// this function allows numbers, letters, spaces in fields
+function numlet(ev)
+{
+  var key;
+  var keychar;
+  if (window.event)
+	key = window.event.keycode;
+  else if (ev)
+	key = ev.which;
+  else return true;
+  keychar = String.fromCharCode(key);
+  keychar = keychar.toLowerCase();
+  if ((key==null) || (key==0) || (key==8) || (key==9) || (key==13) || (key==27))
+	return true;
+  else if ((("abcdefghijklmnopqrstuvwxyz .0123456789").indexOf(keychar) > -1))
+	return true;
+  else
+	return false;
+}
+//-------------------------------------------------------------------
+function find_dist()
+{
+var loc1 = document.myform.loc1.value.toUpperCase();
+var loc2 = document.myform.loc2.value.toUpperCase();
+var loc1x = loc1;
+var loc2x = loc2;
+var valid = 1;  //1=valid 0=invalid
+
+loc1 = expand_loc(loc1);
+loc2 = expand_loc(loc2);
+if (validate2(loc1, loc2) == 0)
+  {
+  alert("Неверный формат локатора");
+  return;
+  }
+
+document.myform.reset();
+document.myform.loc1.value = loc1x;
+document.myform.loc2.value = loc2x;
+
+geo1 = conv_loc_to_deg(loc1);
+geo2 = conv_loc_to_deg(loc2);
+
+lon1 = geo1.longitude * deg2rad;
+lat1 = geo1.latitude * deg2rad;
+
+lon2 = geo2.longitude * deg2rad;
+lat2 = geo2.latitude * deg2rad;
+
+calc_rl(lat1, -lon1, lat2, -lon2);
+}
+
+//-------------------------------------------------------------------
+function calc_gc(lat1, lon1, lat2, lon2)
+{
+var d = acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1 - lon2));
+var gc_d = round((rad2deg * d) * 60 * 10) / 10;
+var gc_dm = round(1.852 * gc_d * 10) / 10;
+var gc_ds = round(1.150779 * gc_d * 10) / 10;
+
+if (sin(lon2 - lon1) < 0)
+  tc = acos((sin(lat2) - sin(lat1) * cos(d)) / (sin(d) * cos(lat1)));
+else if (lon2 - lon1 == 0)
+  if (lat2 < lat1)
+	tc = deg2rad * 180;
+  else
+	tc = 0;
+else
+  tc = 2 * pi - acos((sin(lat2) - sin(lat1) * cos(d)) / (sin(d) * cos(lat1)));
+
+gc_tc = round(tc * rad2deg * 10) / 10;
+
+document.myform.gc_km.value = gc_dm;
+}
+//-------------------------------------------------------------------
+function calc_rl(lat1, lon1, lat2, lon2)
+{
+var dlon_w = mod(lon2 - lon1, pi * 2);
+var dlon_e = mod(lon1 - lon2, pi * 2);
+
+var dphi = ln(tan(lat2 / 2 + pi / 4) / tan(lat1 / 2 + pi / 4));
+
+if (abs(lat2 - lat1) < sqrt(1e-15))
+  var q = cos(lat1);
+else
+  var q = (lat2 - lat1) / dphi;
+
+if (dlon_w < dlon_e)
+  {
+  var tc = mod(atan2(-dlon_w, dphi), 2.0 * pi);
+  var d = sqrt(q * q * dlon_w * dlon_w + (lat2 - lat1) * (lat2 - lat1));
+  }
+else
+  {
+  var tc = mod(atan2(dlon_e, dphi), 2.0 * pi);
+  var d = sqrt(q * q * dlon_e * dlon_e + (lat2 - lat1) * (lat2 - lat1));
+  }
+
+var rl_d = round(rad2deg * d * 60 * 10) / 10;
+var rl_dm = round(1.852 * rl_d * 10) / 10;
+var rl_ds = round(1.150779 * rl_d * 10) / 10;
+var rl_tc = round(rad2deg * tc * 10) / 10;
+
+document.myform.rl_deg.value = rl_tc;
+document.myform.rl_km.value = rl_dm;
+}
+//-------------------------------------------------------------------
+function expand_loc(original)
+{
+ var expanded = original;
+ if (original.length == 6)
+	 expanded = original + "55AA";
+ if (original.length == 8)
+	expanded = original + "LL";
+ return(expanded);
+}
+//-------------------------------------------------------------------
+function validate2(first, second)
+{
+ if ((first.length != 10) || (second.length != 10))
+  return(0);
+
+ // check locator format
+ var myRegExp = /[A-R]{2}[0-9]{2}[A-X]{2}[0-9]{2}[A-X]{2}/;
+ if ((! myRegExp.test(first)) || (! myRegExp.test(second)))
+ return(0);
+}
+//-------------------------------------------------------------------
+function conv_loc_to_deg(locator)
+{
+ var i = 0;
+ var loca = new Array();
+
+ while (i < 10)
+  {
+  loca[i] = locator.charCodeAt(i) - 65;
+  i++;
+  }
+ loca[2] += 17;
+ loca[3] += 17;
+ loca[6] += 17;
+ loca[7] += 17;
+ var lon = (loca[0] * 20 + loca[2] * 2 + loca[4] / 12 + loca[6] / 120 + loca[8] / 2880 - 180);
+ var lat = (loca[1] * 10 + loca[3] + loca[5] / 24 + loca[7] / 240 + loca[9] /5760 - 90);
+ var geo = { latitude: lat, longitude: lon };
+ return(geo);
+}
+
+// Maths functions
+
+function mod(y, x)
+{
+if (y >= 0)
+  return y - x * floor(y / x);
+else
+  return y + x * (floor(-y / x) + 1.0);
+}
+
+function atan2(y, x)
+{
+	return Math.atan2(y, x);
+}
+
+function sqrt(x)
+{
+	return Math.sqrt(x);
+}
+
+function tan(x)
+{
+	return Math.tan(x);
+}
+
+function sin(x)
+{
+	return Math.sin(x);
+}
+
+function cos(x)
+{
+	return Math.cos(x);
+}
+
+function acos(x)
+{
+	return Math.acos(x);
+}
+
+function floor(x)
+{
+	return Math.floor(x);
+}
+
+function round(x)
+{
+	return Math.round(x);
+}
+
+function ceil(x)
+{
+	return Math.ceil(x)
+}
+
+function ln(x)
+{
+	return Math.log(x);
+}
+
+function abs(x)
+{
+	return Math.abs(x);
+}
+
+function pow(x, y)
+{
+	return Math.pow(x, y);
+}
+
+function atan(x)
+{
+	return Math.atan(x);
+}
+
+function chr(x)
+{
+return String.fromCharCode(x);
+}
+
+function round(x)
+{
+	return Math.round(x);
+}
+
+//-->
+// End of myform
+//===================================================================
+
+</script>
+
+<!-- Start of main table for distance calculator-->
+</head><body><table summary="Main table for page layout" align="center">
+<tbody>
+<tr valign="top">
+<td><br>
+<div class="toggle">
+<form name="myform">
+<table summary="Table for form elements">
+<tbody>
+<tr>
+<td width="37%">Ваш локатор</td>
+<td class="c" width="28%"><input class="pre" onkeypress="return numlet(event)" type="text" name="loc1" size="16" maxlength="10"></td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>корреспондента</td>
+<td class="c"><input class="pre" onkeypress="return numlet(event)" onkeyup='onTypeLoc()' type="text" name="loc2" size="16" maxlength="10"></td>
+<td>
+<p align="center"><input onclick="find_dist()" type="button" value="Подсчитать" class="button3"></p></td>
+</tr>
+</tbody>
+</table>
+<table summary="Results" width="442">
+<tbody>
+<tr>
+<td width="105">&nbsp;</td>
+<td class="d">Градусы</td>
+<td class="d">Километры</td>
+</tr>
+<tr>
+<td width="105">Прямая:</td>
+<td class="c"><input class="code" type="text" name="rl_deg" readonly="readonly" size="6"></td>
+<td class="c"><input class="code" type="text" name="rl_km" readonly="readonly" size="8"></td>
+</tr>
+</tbody>
+</table><br>
+<input type="reset" value="Сброс" class="button3"></form></div>
+<br>
+<br>
+</td></tr></tbody></table><div></div></body></html>

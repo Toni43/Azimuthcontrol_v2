@@ -1,0 +1,1664 @@
+
+<!-- saved from url=(0023)http://22dx.ru/qth.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style type="text/css">
+body {background:#FFF url(images/patterns/body-bg13.png) top center;
+	color: #333;
+	font-family: Tahoma,Arial,Verdana,sans-serif;
+	font-size: 13px;}
+	p,h1 	{ margin: 0px 10px 10px 10px;}
+	h1, h2, h3,h4, h5, h6 { font-weight:normal;}  
+	hr		{width: 80%;}
+	input	{ font-family: verdana; font-size: 8pt;}
+	select	{ font-family: verdana; font-size: 8pt;}
+	td.c	{ text-align: center}
+	td.d	{ text-align: center; font-size:12px;}
+	td.calc { background-color: #cccccc;}
+	tr.e	{ color: black; font-weight: bold; padding-left: 25px;}
+	div.main {border:0px solid #000; background:#dddddd;}
+
+.toggle {background:#F6F6F6;margin-bottom: 15px;	border: 1px solid #E1E1E1;border-bottom: 1px solid #979797;padding: 5px 10px;border-radius: 5px;-moz-border-radius: 5px;-webkit-border-radius: 5px;position: relative;box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);-moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);-webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);	}
+.button2 {display: inline-block;  color: #000000;  font-weight: 700;  text-decoration: none;  user-select: none;  padding: 5px;  outline: none;  border: 1px solid #000000;  border-radius: 4px;  transition: 0.2s;}
+.button2:hover { background: #CD2122;color: #FFFFFF; }
+.button2:active { background: #FFFFFF; }
+.button3 {background:#CD2122; border:1px solid #000000; cursor:pointer; color:#FFFFFF; padding:1; font-size:12px; border-radius: 2px}
+.button3:hover {background:#000000; color:#FFFFFF;border:1px solid #000000}
+.button4 {background:#F6F6F6; border: 2px solid #A3A3A3; cursor:pointer; color:#000000; padding:1; font-size:12px; border-radius: 3px; transition: 0.2s}
+.button4:hover {background:#FFFFFF; color:#CD2122;border:2px solid #CD2122}
+.button4:active {background:#CD2122; color:#FFFFFF;border:2px solid #CD2122}
+
+pre ,code{
+	direction:ltr;
+	background:url(images/code-bg.png);
+	font: 11px/19px 'andale mono', 'lucida console', monospace;
+	padding: 3px;
+	display: block;
+	overflow-x: visible;
+	overflow-y: hidden;
+	margin: 0 0 20px 0;
+	color: #666;
+	border-top: 1px solid #E1E1E1;
+	border-left: 1px solid #E1E1E1;
+	border-bottom: 1px solid #F0F0F0;
+	border-right: 1px solid #F0F0F0;
+}
+</style>
+<noscript>
+<h2 class="f">This browser has javascript turned off</h2>
+<h3>This program will not work until Javascript has been enabled</h3>
+</noscript>
+
+<script type="text/javascript" language="javascript">
+<!--
+//======================================================================
+// November 2005 changes, ver 4.01
+// added numonly and numlet functions to stop entry of invalid characters
+//
+// ======================================================================
+var deg2rad = Math.PI / 180;
+var rad2deg = 180.0 / Math.PI;
+var pi = Math.PI;
+var locres = 0; //6 locator characters
+domain = 'cix.co.uk';
+user = 'hzk';
+
+onload = function()
+{
+document.myform.reset();
+//document.myform.loc1.focus();
+
+}
+//-------------------------------------------------------------------
+// this function allows only numbers in fields
+function numonly(ev)
+{
+  var key;
+  var keychar;
+  if (window.event)
+	key = window.event.keycode;
+  else if (ev)
+	key = ev.which;
+  else return true;
+  keychar = String.fromCharCode(key);
+  if ((key==null) || (key==0) || (key==8) || (key==9) || (key==13) || (key==27))
+	return true;
+  else if (((".0123456789").indexOf(keychar) > -1))
+	return true;
+  else
+	return false;
+}
+//-------------------------------------------------------------------
+// this function allows numbers, letters, spaces in fields
+function numlet(ev)
+{
+  var key;
+  var keychar;
+  if (window.event)
+	key = window.event.keycode;
+  else if (ev)
+	key = ev.which;
+  else return true;
+  keychar = String.fromCharCode(key);
+  keychar = keychar.toLowerCase();
+  if ((key==null) || (key==0) || (key==8) || (key==9) || (key==13) || (key==27))
+	return true;
+  else if ((("abcdefghijklmnopqrstuvwxyz .0123456789").indexOf(keychar) > -1))
+	return true;
+  else
+	return false;
+}
+//-------------------------------------------------------------------
+function find_dist()
+{
+var loc1 = document.myform.loc1.value.toUpperCase();
+var loc2 = document.myform.loc2.value.toUpperCase();
+var loc1x = loc1;
+var loc2x = loc2;
+var valid = 1;  //1=valid 0=invalid
+
+loc1 = expand_loc(loc1);
+loc2 = expand_loc(loc2);
+if (validate2(loc1, loc2) == 0)
+  {
+  alert("Неверный формат локатора");
+  return;
+  }
+
+document.myform.reset();
+document.myform.loc1.value = loc1x;
+document.myform.loc2.value = loc2x;
+
+geo1 = conv_loc_to_deg(loc1);
+geo2 = conv_loc_to_deg(loc2);
+
+lon1 = geo1.longitude * deg2rad;
+lat1 = geo1.latitude * deg2rad;
+
+lon2 = geo2.longitude * deg2rad;
+lat2 = geo2.latitude * deg2rad;
+
+calc_gc(lat1, -lon1, lat2, -lon2);
+calc_rl(lat1, -lon1, lat2, -lon2);
+}
+
+//-------------------------------------------------------------------
+function calc_gc(lat1, lon1, lat2, lon2)
+{
+var d = acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1 - lon2));
+var gc_d = round((rad2deg * d) * 60 * 10) / 10;
+var gc_dm = round(1.852 * gc_d * 10) / 10;
+var gc_ds = round(1.150779 * gc_d * 10) / 10;
+
+if (sin(lon2 - lon1) < 0)
+  tc = acos((sin(lat2) - sin(lat1) * cos(d)) / (sin(d) * cos(lat1)));
+else if (lon2 - lon1 == 0)
+  if (lat2 < lat1)
+	tc = deg2rad * 180;
+  else
+	tc = 0;
+else
+  tc = 2 * pi - acos((sin(lat2) - sin(lat1) * cos(d)) / (sin(d) * cos(lat1)));
+
+gc_tc = round(tc * rad2deg * 10) / 10;
+
+document.myform.gc_deg.value = gc_tc;
+document.myform.gc_km.value = gc_dm;
+document.myform.gc_mi.value = gc_d;
+document.myform.gc_sm.value = gc_ds;
+}
+//-------------------------------------------------------------------
+function calc_rl(lat1, lon1, lat2, lon2)
+{
+var dlon_w = mod(lon2 - lon1, pi * 2);
+var dlon_e = mod(lon1 - lon2, pi * 2);
+
+var dphi = ln(tan(lat2 / 2 + pi / 4) / tan(lat1 / 2 + pi / 4));
+
+if (abs(lat2 - lat1) < sqrt(1e-15))
+  var q = cos(lat1);
+else
+  var q = (lat2 - lat1) / dphi;
+
+if (dlon_w < dlon_e)
+  {
+  var tc = mod(atan2(-dlon_w, dphi), 2.0 * pi);
+  var d = sqrt(q * q * dlon_w * dlon_w + (lat2 - lat1) * (lat2 - lat1));
+  }
+else
+  {
+  var tc = mod(atan2(dlon_e, dphi), 2.0 * pi);
+  var d = sqrt(q * q * dlon_e * dlon_e + (lat2 - lat1) * (lat2 - lat1));
+  }
+
+var rl_d = round(rad2deg * d * 60 * 10) / 10;
+var rl_dm = round(1.852 * rl_d * 10) / 10;
+var rl_ds = round(1.150779 * rl_d * 10) / 10;
+var rl_tc = round(rad2deg * tc * 10) / 10;
+
+document.myform.rl_deg.value = rl_tc;
+document.myform.rl_km.value = rl_dm;
+document.myform.rl_mi.value = rl_d;
+document.myform.rl_sm.value = rl_ds;
+}
+//-------------------------------------------------------------------
+function expand_loc(original)
+{
+ var expanded = original;
+ if (original.length == 6)
+	 expanded = original + "55AA";
+ if (original.length == 8)
+	expanded = original + "LL";
+ return(expanded);
+}
+//-------------------------------------------------------------------
+function validate2(first, second)
+{
+ if ((first.length != 10) || (second.length != 10))
+  return(0);
+
+ // check locator format
+ var myRegExp = /[A-R]{2}[0-9]{2}[A-X]{2}[0-9]{2}[A-X]{2}/;
+ if ((! myRegExp.test(first)) || (! myRegExp.test(second)))
+ return(0);
+}
+//-------------------------------------------------------------------
+function conv_loc_to_deg(locator)
+{
+ var i = 0;
+ var loca = new Array();
+
+ while (i < 10)
+  {
+  loca[i] = locator.charCodeAt(i) - 65;
+  i++;
+  }
+ loca[2] += 17;
+ loca[3] += 17;
+ loca[6] += 17;
+ loca[7] += 17;
+ var lon = (loca[0] * 20 + loca[2] * 2 + loca[4] / 12 + loca[6] / 120 + loca[8] / 2880 - 180);
+ var lat = (loca[1] * 10 + loca[3] + loca[5] / 24 + loca[7] / 240 + loca[9] /5760 - 90);
+ var geo = { latitude: lat, longitude: lon };
+ return(geo);
+}
+// End of myform
+//===================================================================
+//functions for myform2
+//===================================================================
+function val_ll()
+{
+  var latd = document.myform2.latd.value;
+  var latm = document.myform2.latm.value;
+  var lats = document.myform2.lats.value;
+  var latb = document.myform2.latb.selectedIndex;
+  var lond = document.myform2.lond.value;
+  var lonm = document.myform2.lonm.value;
+  var lons = document.myform2.lons.value;
+  var lonb = document.myform2.lonb.selectedIndex;
+  locres = document.myform2.locc.selectedIndex;
+
+  //alert(lonb);
+
+  // cope with blank fields
+  if (latd == "")
+  {
+	alert("Latitude degrees must be entered");
+	return;
+  }
+
+if (latb == -1)  //Safari bug, -1 after reset.
+  latb = 0;
+if (lonb == -1)
+  lonb = 0;
+
+  if (latm == "")
+	latm = "0";  document.myform2.latm.value = latm;
+  if (lats == "")
+	lats = "0";  document.myform2.lats.value = lats;
+  if (latb == 0)
+	latb = "1";  document.myform2.latb.selectedIndex = latb;  // default N
+  if (lond == "")
+	lond = "0";  document.myform2.lond.value = lond;
+  if (lonm == "")
+	lonm = "0";  document.myform2.lonm.value = lonm;
+  if (lons == "")
+	lons = "0";  document.myform2.lons.value = lons;
+  if (lonb == 0)
+	lonb = 1;  document.myform2.lonb.selectedIndex = lonb;  // default W
+
+document.myform2.latb2.selectedIndex = latb;
+document.myform2.lonb2.selectedIndex = lonb;
+
+//alert(lonb);
+
+  //validate
+  if (abs(Number(latd)) >= 90)
+  {
+	alert("Degrees wrong");
+	return;
+  }
+  if (Number(latm) >= 60)
+  {
+	alert("Minutes wrong");
+	return;
+  }
+  if (Number(lats) >= 60)
+  {
+	alert("Seconds wrong");
+	return;
+  }
+  if (abs(Number(lond)) >= 180)
+  {
+	alert("Degrees wrong");
+	return;
+  }
+  if (Number(lonm) >= 60)
+  {
+	alert("Minutes wrong");
+	return;
+  }
+  if (Number(lons) >= 60)
+  {
+	alert("Seconds wrong");
+	return;
+  }
+
+  var lat = Number(latd);
+  lat = lat + Number(latm) / 60;
+  lat = lat + Number(lats) / 3600;
+  if (latb == 2)  // S
+	lat = lat * -1;
+  var lon = Number(lond);
+  lon = lon + Number(lonm) / 60;
+  lon = lon + Number(lons) / 3600;
+  if (lonb == 1)  // W
+	lon = lon * -1;
+
+  document.myform2.latd2.value = latd;  // fill in dmh
+  document.myform2.lond2.value = lond;
+  latm2 = Number(latm) + Number(lats)/60;
+  latm2 = floor(latm2 * 1000)/1000;
+  lonm2 = Number(lonm) + Number(lons)/60;
+  lonm2 = floor(lonm2 * 1000)/1000;
+  document.myform2.latm2.value = latm2;
+  document.myform2.lonm2.value = lonm2;
+
+  document.myform2.ngr.value = "";
+  document.myform2.grid.selectedIndex = 0;
+  document.myform2.northings.value = "";
+  document.myform2.eastings.value = "";
+  document.myform2.locator.value = "";
+  document.myform2.latb.selectedIndex = latb;
+  document.myform2.lonb.selectedIndex = lonb;
+  if (locres == -1)   // Safari bug
+	locres = 0;
+  var loc = calcloc(lon, lat);  //wgs84
+
+  var locy = loc.substring(0, 6 + 2 * locres);
+  document.myform2.locator.value = locy;
+  var grid = choose_where(lat, lon);
+  var phip = lat * deg2rad;  // deg to rad
+  var lambdap = lon * deg2rad;
+  if (grid == "")
+	return;
+  var geo = convert_to_local(grid, phip, lambdap);
+  phip = geo.latitude;
+  lambdap = geo.longitude;
+  //alert(lonb);
+  ll2ne(phip, lambdap, grid);
+}
+//===================================================================
+function val_ll2()
+{
+  var latd2 = document.myform2.latd2.value;
+  var latm2 = document.myform2.latm2.value;
+  var latb2 = document.myform2.latb2.selectedIndex;
+  var lond2 = document.myform2.lond2.value;
+  var lonm2 = document.myform2.lonm2.value;
+  var lonb2 = document.myform2.lonb2.selectedIndex;
+  locres = document.myform2.locc.selectedIndex;
+
+  // cope with blank fields
+  if (latd2 == "")
+  {
+	alert("Latitude degrees must be entered");
+	return;
+  }
+
+if (latb2 == -1)  //Safari bug, -1 after reset.
+  latb2 = 0;
+if (lonb2 == -1)
+  lonb2 = 0;
+
+  if (latm2 == "")
+	latm2 = "0";  document.myform2.latm2.value = latm2;
+  if (latb2 == 0)
+	latb2 = "1";  document.myform2.latb2.selectedIndex = latb2;  // default N
+  if (lond2 == "")
+	lond2 = "0";  document.myform2.lond2.value = lond2;
+  if (lonm2 == "")
+	lonm2 = "0";  document.myform2.lonm2.value = lonm2;
+  if (lonb2 == 0)
+	lonb2 = 1;  document.myform2.lonb2.selectedIndex = lonb2;  // default W
+
+  document.myform2.latb.selectedIndex = latb2;
+  document.myform2.lonb.selectedIndex = lonb2;
+
+  //validate
+  if (abs(Number(latd2)) >= 90)
+  {
+	alert("Degrees wrong");
+	return;
+  }
+  if (Number(latm2) >= 60)
+  {
+	alert("Minutes wrong");
+	return;
+  }
+  if (abs(Number(lond2)) >= 180)
+  {
+	alert("Degrees wrong");
+	return;
+  }
+  if (Number(lonm2) >= 60)
+  {
+	alert("Minutes wrong");
+	return;
+  }
+
+
+  var lat = Number(latd2);
+  lat = lat + Number(latm2) / 60;
+//  lat = lat + Number(lats) / 3600;
+  if (latb2 == 2)  // S
+	lat = lat * -1;
+  var lon = Number(lond2);
+  lon = lon + Number(lonm2) / 60;
+//  lon = lon + Number(lons) / 3600;
+  if (lonb2 == 1)  // W
+	lon = lon * -1;
+
+  document.myform2.latd.value = latd2;   // fill in dms
+  document.myform2.lond.value = lond2;
+  document.myform2.latm.value = floor(latm2);
+  document.myform2.lonm.value = floor(lonm2);
+  p1 = (latm2 - floor(latm2)) * 60;
+  lats = floor(p1 * 100)/100;
+  document.myform2.lats.value = lats;
+  p1 = (lonm2 - floor(lonm2)) * 60;
+  lons = floor(p1 * 100)/100;
+  document.myform2.lons.value = lons;
+
+  document.myform2.ngr.value = "";
+  document.myform2.grid.selectedIndex = 0;
+  document.myform2.northings.value = "";
+  document.myform2.eastings.value = "";
+  document.myform2.locator.value = "";
+  document.myform2.latb2.selectedIndex = latb2;
+  document.myform2.lonb2.selectedIndex = lonb2;
+  if (locres == -1)   // Safari bug
+	locres = 0;
+  var loc = calcloc(lon, lat);  //wgs84
+  var locy = loc.substring(0, 6 + 2 * locres);
+  document.myform2.locator.value = locy;
+  var grid = choose_where(lat, lon);
+  var phip = lat * deg2rad;  // deg to rad
+  var lambdap = lon * deg2rad;
+  if (grid == "")
+	return;
+  var geo = convert_to_local(grid, phip, lambdap);
+  phip = geo.latitude;
+  lambdap = geo.longitude;
+  ll2ne(phip, lambdap, grid);
+}
+//===================================================================
+function transform(lat, lon, a, e, h, a2, e2, xp, yp, zp, xr, yr, zr, s)
+{
+  // convert to cartesian; lat, lon are radians
+  sf = s * 0.000001;
+  v = a / (sqrt(1 - (e *(sin(lat) * sin(lat)))));
+  x = (v + h) * cos(lat) * cos(lon);
+  y = (v + h) * cos(lat) * sin(lon);
+  z = ((1 - e) * v + h) * sin(lat);
+
+  xrot = (xr / 3600) * deg2rad;
+  yrot = (yr / 3600) * deg2rad;
+  zrot = (zr / 3600) * deg2rad;
+
+  hx = x + (x * sf) - (y * zrot) + (z * yrot) + xp;
+  hy = (x * zrot) + y + (y * sf) - (z * xrot) + yp;
+  hz = (-1 * x * yrot) + (y * xrot) + z + (z * sf) + zp;
+
+  // Convert back to lat, lon
+  lon = atan(hy / hx);
+  p = sqrt((hx * hx) + (hy * hy));
+  lat = atan(hz / (p * (1 - e2)));
+  v = a2 / (sqrt(1 - e2 * (sin(lat) * sin(lat))));
+  errvalue = 1.0;
+  lat0 = 0;
+  while (errvalue > 0.001)
+  {
+	lat0 = atan((hz + e2 * v * sin(lat)) / p);
+	errvalue = abs(lat0 - lat);
+	lat = lat0;
+  }
+  h = p / cos(lat) - v;
+  var geo = { latitude: lat, longitude: lon };
+  return(geo);
+}
+//===================================================================
+function ll2ne(lat, lon, grid)
+{
+// converts Lat/Lon OSGB to Easting and Northing: inputs radians.
+  var phi = lat;   // latitude rad
+  var lam = lon;   // longitude rad
+ // grid = grid;	   // British, Irish, Channel
+  if (grid == "British")
+  {
+	a = 6377563.396;	   // OSGB semi-major
+	b = 6356256.91;		// OSGB semi-minor
+	e0 = 400000;		   // easting of false origin
+	n0 = -100000;		  // northing of false origin
+	f0 = 0.9996012717;	 // OSGB scale factor on central meridian
+	e2 = 0.0066705397616;  // OSGB eccentricity squared
+	lam0 = -0.034906585039886591;  // OSGB false east
+	phi0 = 0.85521133347722145;	// OSGB false north
+	document.myform2.grid.selectedIndex = 1;
+  }
+  if (grid == "Irish")
+  {
+	a = 6377340.189;	   // OSGBI semi-major
+	b = 6356034.447;		// OSGBI semi-minor
+	e0 = 200000;		   // easting of false origin
+	n0 = 250000;		  // northing of false origin
+	f0 = 1.000035;	 // OSGBI scale factor on central meridian
+	e2 = 0.00667054015;  // OSGBI eccentricity squared
+	lam0 = -0.13962634015954636615389526147909;  // OSGBI false east
+	phi0 = 0.93375114981696632365417456114141;	// OSGBI false north
+	document.myform2.grid.selectedIndex = 2;
+  }
+  if (grid == "Channel Islands")
+  {
+	a = 6378388.000;	   // INT24 ED50 semi-major
+	b = 6356911.946;	   // INT24 ED50 semi-minor
+	e0 = 500000;		   // easting of false origin
+	n0 = 0;				// northing of false origin
+	f0 = 0.9996;		   // INT24 ED50 scale factor on central meridian
+	e2 = 0.0067226700223333;  // INT24 ED50 eccentricity squared
+	lam0 = -0.0523598775598;  // INT24 ED50 false east
+	phi0 = 0 * deg2rad;	// INT24 ED50 false north
+	document.myform2.grid.selectedIndex = 3;
+  }
+  var af0 = a * f0;
+  var bf0 = b * f0;
+  // easting
+  var slat2 = sin(phi) * sin(phi);
+  var nu = af0 / (sqrt(1 - (e2 * (slat2))));
+  var rho = (nu * (1 - e2)) / (1 - (e2 * slat2));
+  var eta2 = (nu / rho) - 1;
+  var p = lam - lam0; //LAM-LAM0
+  var IV = nu * cos(phi);
+  var clat3 = cos(phi) * cos(phi) * cos(phi);
+  var tlat2 = tan(phi) * tan(phi);
+  var V = (nu / 6) * clat3 * ((nu / rho) - tlat2);
+  var clat5 = pow(cos(phi), 5);
+  var tlat4 = pow(tan(phi), 4);
+  var VI = (nu / 120) * clat5 * ((5 - (18 * tlat2)) + tlat4 + (14 * eta2) - (58 * tlat2 * eta2));
+  east = e0 + (p * IV) + (pow(p, 3) * V) + (pow(p, 5) * VI);
+  // northing
+  var n = (af0 - bf0) / (af0 + bf0);
+  var M = Marc(bf0, n, phi0, phi);
+  var I = M + (n0);
+  var II = (nu / 2) * sin(phi) * cos(phi);
+  var III = ((nu / 24) * sin(phi) * clat3) * (5 - tlat2 + (9 * eta2));
+  var IIIA = ((nu / 720) * sin(phi) * clat5) * (61 - (58 * tlat2) + tlat4);
+  north = I + ((p * p) * II) + (pow(p, 4) * III) + (pow(p, 6) * IIIA);
+
+  north = round(north * 100) / 100;
+  east = round(east * 100) / 100;
+
+  document.myform2.northings.value = north;
+  document.myform2.eastings.value = east;
+  east = round(east);
+  north = round(north);
+  en2ngr(east, north, grid);
+}
+//===================================================================
+function ne2ll()  // (east, north, grid)
+{
+// converts NGR easting and nothing to lat, lon.
+// input metres, output radians
+  var grid = document.myform2.grid.selectedIndex;
+  var north = document.myform2.northings.value;
+  var east = document.myform2.eastings.value;
+  var nX = Number(north);
+  var eX = Number(east);
+  var locres = document.myform2.locc.selectedIndex;
+  document.myform2.reset();
+  document.myform2.locc.selectedIndex = locres;
+  document.myform2.northings.value = north;
+  document.myform2.eastings.value = east;
+  document.myform2.grid.selectedIndex = grid;
+
+  if (grid == 0)  // no grid specified
+	grid = 1;  // default British
+  document.myform2.grid.selectedIndex = grid;
+
+  // validate - check all are numbers and something is entered
+  if ((String(nX) == "NaN") || (String(eX) == "NaN") || (north.length == 0) || (east.length == 0))
+  {
+	alert("Invalid northings or eastings");
+	return;
+  }
+
+  if (grid == 2)  // Irish
+  {
+	a = 6377340.189;	   // OSGBI semi-major
+	b = 6356034.447;		// OSGBI semi-minor
+	e0 = 200000;		   // easting of false origin
+	n0 = 250000;		  // northing of false origin
+	f0 = 1.000035;	 // OSGBI scale factor on central meridian
+	e2 = 0.00667054015;  // OSGBI eccentricity squared
+	lam0 = -0.13962634015954636615389526147909;  // OSGBI false east
+	phi0 = 0.93375114981696632365417456114141;	// OSGBI false north
+	en2ngr(round(eX), round(nX), "Irish");
+  }
+   if (grid == 1)  // British
+  {
+	a = 6377563.396;	   // OSI semi-major
+	b = 6356256.91;		// OSI semi-minor
+	e0 = 400000;		   // easting of false origin
+	n0 = -100000;		  // northing of false origin
+	f0 = 0.9996012717;	 // OSI scale factor on central meridian
+	e2 = 0.0066705397616;  // OSI eccentricity squared
+	lam0 = -0.034906585039886591;  // OSI false east
+	phi0 = 0.85521133347722145;	// OSI false north
+	en2ngr(round(eX), round(nX), "British");
+  }
+  if (grid == 3)   // Channel Is
+  {
+	a = 6378388.000;	   // INT24 ED50 semi-major
+	b = 6356911.946;	   // INT24 ED50 semi-minor
+	e0 = 500000;		   // easting of false origin
+	n0 = 0;				// northing of false origin
+	f0 = 0.9996;		   // INT24 ED50 scale factor on central meridian
+	e2 = 0.0067226700223333;  // INT24 ED50 eccentricity squared
+	lam0 = -0.0523598775598;  // INT24 ED50 false east
+	phi0 = 0 * deg2rad;	// INT24 ED50 false north
+	en2ngr(round(eX), round(nX), "Channel Islands");
+  }
+  var af0 = a * f0;
+  var bf0 = b * f0;
+  var n = (af0 - bf0) / (af0 + bf0);
+  var Et = east - e0;
+  var phid = InitialLat(north, n0, af0, phi0, n, bf0);
+  var nu = af0 / (sqrt(1 - (e2 * (sin(phid) * sin(phid)))));
+  var rho = (nu * (1 - e2)) / (1 - (e2 * (sin(phid)) * (sin(phid))));
+  var eta2 = (nu / rho) - 1;
+  var tlat2 = tan(phid) * tan(phid);
+  var tlat4 = pow(tan(phid), 4);
+  var tlat6 = pow(tan(phid), 6);
+  var clatm1 = pow(cos(phid), -1);
+  var VII = tan(phid) / (2 * rho * nu);
+  var VIII = (tan(phid) / (24 * rho * (nu * nu * nu))) * (5 + (3 * tlat2) + eta2 - (9 * eta2 * tlat2));
+  var IX = ((tan(phid)) / (720 * rho * pow(nu, 5))) * (61 + (90 * tlat2) + (45 * tlat4));
+  var phip = (phid - ((Et * Et) * VII) + (pow(Et, 4) * VIII) - (pow(Et, 6) * IX));
+  var X = pow(cos(phid), -1) / nu;
+  var XI = (clatm1 / (6 * (nu * nu * nu))) * ((nu / rho) + (2 * (tlat2)));
+  var XII = (clatm1 / (120 * pow(nu, 5))) * (5 + (28 * tlat2) + (24 * tlat4));
+  var XIIA = clatm1 / (5040 * pow(nu, 7)) * (61 + (662 * tlat2) + (1320 * tlat4) + (720 * tlat6));
+  var lambdap = (lam0 + (Et * X) - ((Et * Et * Et) * XI) + (pow(Et, 5) * XII) - (pow(Et, 7) * XIIA));
+
+  var geo = convert_to_wgs(grid, phip, lambdap);
+
+  var lat = geo.latitude * rad2deg;
+  var lon = geo.longitude * rad2deg;
+
+  todms(lat, lon);
+  var loc = calcloc(lon, lat);
+  if (locres == -1)				// safari bug -1 after reset.
+	locres = 0;
+  var locy = loc.substring(0, 6 + 2 * locres);
+  document.myform2.locator.value = locy;
+}
+//===================================================================
+function Marc(bf0, n, phi0, phi)
+{
+  var Marc = bf0 * (((1 + n + ((5 / 4) * (n * n)) + ((5 / 4) * (n * n * n))) * (phi - phi0))
+	- (((3 * n) + (3 * (n * n)) + ((21 / 8) * (n * n * n))) * (sin(phi - phi0)) * (cos(phi + phi0)))
+	+ ((((15 / 8) * (n * n)) + ((15 / 8) * (n * n * n))) * (sin(2 * (phi - phi0))) * (cos(2 * (phi + phi0))))
+	- (((35 / 24) * (n * n * n)) * (sin(3 * (phi - phi0))) * (cos(3 * (phi + phi0)))));
+  return(Marc);
+}
+//===================================================================
+function InitialLat(north, n0, af0, phi0, n, bf0)
+{
+  var phi1 = ((north - n0) / af0) + phi0;
+  var M = Marc(bf0, n, phi0, phi1);
+  var phi2 = ((north - n0 - M) / af0) + phi1;
+  var ind = 0;
+  while ((abs(north - n0 - M) > 0.00001) && (ind < 20))  // max 20 iterations in case of error
+  {
+	ind = ind + 1;
+	phi2 = ((north - n0 - M) / af0) + phi1;
+	M = Marc(bf0, n, phi0, phi2);
+	phi1 = phi2;
+  }
+  return(phi2);
+}
+//===================================================================
+function choose_where(lat, lon)
+{
+var where = "";
+if ((lat >= 49) && (lat <= 50) && (lon >= -3) && (lon <= -2))
+  where = "Channel Islands"
+else if ((lon <= -6) && (lon > -11) && (lat > 51) && (lat <= 54))
+  where = "Irish";
+else if ((lon < -5.333) && (lon >- 11) && (lat >= 54) && (lat <= 55))
+  where = "Irish";
+else if ((lon < -5.9) && (lon >= -9) && (lat >= 55) && (lat < 55.5))
+  where = "Irish";
+else if ((lon < 1.8) && (lon > -9) && (lat > 49.8166) && (lat < 61))
+  where = "British";
+return where;
+}
+//===================================================================
+function calcloc(e, n)
+// calculate IARU locator from lat, lon
+// includes correction to hopefully avoid js fp maths error.
+// input is in degrees.
+{
+	e = e + 180;
+	ee = e;
+	n = n + 90;
+	nn = n;
+	var locator = "";
+	e = e / 20 + 0.0000001;
+	n = n / 10 + 0.0000001;
+	locator = locator + chr(65 + e) + chr(65 + n);
+	e = e - floor(e);
+	n = n - floor(n);
+	e = e * 10;
+	n = n * 10;
+	locator = locator + chr(48 + e) + chr(48 + n);
+	e = e - floor(e);
+	n = n - floor(n);
+	e = e * 24;
+	n = n * 24;
+	locator = locator + chr(65 + e) + chr(65 + n);
+	e = e - floor(e);
+	n = n - floor(n);
+	e = e * 10;
+	n = n * 10;
+	locator = locator + chr(48 + e) + chr(48 + n);
+	e = e - floor(e);
+	n = n - floor(n);
+	e = e * 24;
+	n = n * 24;
+	locator = locator + chr(65 + e) + chr(65 + n);
+	return locator;
+}
+//===================================================================
+function conv_loc_to_ll()
+{
+  var i = 0;
+  var locator = document.myform2.locator.value.toUpperCase();
+  var locx = locator;
+  var loca = new Array();
+
+  if (locator.length == 6)
+	locator = locator + "55AA";
+  if (locator.length == 8)
+	locator = locator + "LL";
+  if (locator.length != 10)
+  {
+	alert("Locator format incorrect");
+	return;
+  }
+
+  // check locator format
+  var myRegExp = /[A-R]{2}[0-9]{2}[A-X]{2}[0-9]{2}[A-X]{2}/;
+  if (! myRegExp.test(locator))
+  {
+	alert("Locator format incorrect")
+	return;
+  }
+  locres = document.myform2.locc.selectedIndex;
+  document.myform2.reset();
+  document.myform2.locator.value = locx;
+  document.myform2.locc.selectedIndex = locres;
+
+  while (i < 10)
+  {
+	loca[i] = locator.charCodeAt(i) - 65;
+	i++;
+  }
+  loca[2] += 17;
+  loca[3] += 17;
+  loca[6] += 17;
+  loca[7] += 17;
+  var lon = (loca[0] * 20 + loca[2] * 2 + loca[4] / 12 + loca[6] / 120 + loca[8] / 2880 - 180);
+  var lat = (loca[1] * 10 + loca[3] + loca[5] / 24 + loca[7] / 240 + loca[9] /5760 - 90);
+  todms(lat, lon);
+  var grid = choose_where(lat, lon);
+  var phip = lat * deg2rad;  // deg to rad
+  var lambdap = lon * deg2rad;
+  var geo = convert_to_local(grid, phip, lambdap);
+  phip = geo.latitude;
+  lambdap = geo.longitude;
+  ll2ne(phip, lambdap, grid);
+//make_ngr(lat, lon);
+}
+//===================================================================
+function todms(lat, lon)
+// convert decimal degrees to dms and dmh
+{
+  var latbrg = 1;
+  var lonbrg = 2;
+  if (lat < 0)
+	latbrg = 2
+  if (lon < 0)
+	lonbrg = 1;
+  var tlat = abs(lat);
+  var tlon = abs(lon);
+  var deglat = floor(tlat);
+  var t = (tlat - deglat) * 60;
+  var minlat2 = floor((t * 1000) + 0.0005);  //mins and hundredths ****
+  minlat2 = minlat2 / 1000;
+  var minlat = floor(t);
+  var seclat = (t - minlat) * 60;
+  seclat = seclat + 0.005;  //round to .005 sec
+  seclat = floor(seclat * 100) / 100;  //  works in js 1.4
+  var deglon = floor(tlon);
+  t = (tlon - deglon) * 60;
+  var minlon = floor(t);
+  var minlon2 = floor((t * 1000) + 0.0005);  //mins and hundredths ****
+  minlon2 = minlon2 / 1000;
+  var seclon = (t - minlon) * 60;
+  seclon = seclon + 0.005;
+  seclon = floor(seclon * 100) /100;  // js 1.4
+  document.myform2.latd.value = deglat;
+  document.myform2.latd2.value = deglat;
+
+  document.myform2.latm.value = minlat;
+  document.myform2.latm2.value = minlat2;
+
+  document.myform2.lats.value = seclat;
+
+  document.myform2.latb.selectedIndex = latbrg;
+  document.myform2.latb2.selectedIndex = latbrg;
+
+  document.myform2.lond.value = deglon;
+  document.myform2.lond2.value = deglon;
+
+  document.myform2.lonm.value = minlon;
+  document.myform2.lonm2.value = minlon2;
+
+  document.myform2.lons.value = seclon;
+
+  document.myform2.lonb.selectedIndex = lonbrg;
+  document.myform2.lonb2.selectedIndex = lonbrg;
+}
+//===================================================================
+function convert_to_local(grid, phip, lambdap)
+{
+  var WGS84_AXIS = 6378137;
+  var WGS84_ECCENTRIC = 0.00669438037928458;
+  var OSGB_AXIS = 6377563.396;
+  var OSGB_ECCENTRIC = 0.0066705397616;
+  var IRISH_AXIS = 6377340.189;
+  var IRISH_ECCENTRIC = 0.00667054015;
+  var INT24_AXIS = 6378388.000;
+  var INT24_ECCENTRIC = 0.0067226700223333;
+  var height = 10;  // dummy height
+  if (grid == "British")
+  {
+	var geo = transform(phip, lambdap, WGS84_AXIS, WGS84_ECCENTRIC, height, OSGB_AXIS, OSGB_ECCENTRIC, -446.448, 125.157, -542.06, -0.1502, -0.247, -0.8421, 20.4894);
+  }
+  if (grid == "Irish")
+  {
+	var geo = transform(phip, lambdap, WGS84_AXIS, WGS84_ECCENTRIC, height, IRISH_AXIS, IRISH_ECCENTRIC, -482.53, 130.596, -564.557, 1.042, 0.214, 0.631, -8.15);
+  }
+  if (grid == "Channel Islands")
+  {
+	var geo = transform(phip, lambdap, WGS84_AXIS, WGS84_ECCENTRIC, height,  INT24_AXIS, INT24_ECCENTRIC, 83.901, 98.127, 118.635, 0, 0, 0, 0);
+  }
+  return(geo);
+}
+//===================================================================
+function convert_to_wgs(grid, phip, lambdap)
+{
+  var WGS84_AXIS = 6378137;
+  var WGS84_ECCENTRIC = 0.00669438037928458;
+  var OSGB_AXIS = 6377563.396;
+  var OSGB_ECCENTRIC = 0.0066705397616;
+  var IRISH_AXIS = 6377340.189;
+  var IRISH_ECCENTRIC = 0.00667054015;
+  var INT24_AXIS = 6378388.000;
+  var INT24_ECCENTRIC = 0.0067226700223333;
+  var height = 10;  // dummy height
+  if (grid == 1)
+  {
+	var geo = transform(phip, lambdap, OSGB_AXIS, OSGB_ECCENTRIC, height, WGS84_AXIS, WGS84_ECCENTRIC, 446.448, -125.157, 542.06, 0.1502, 0.247, 0.8421, 20.4894);
+  }
+  if (grid == 2)
+  {
+	var geo = transform(phip, lambdap, IRISH_AXIS, IRISH_ECCENTRIC, height, WGS84_AXIS, WGS84_ECCENTRIC, 482.53, -130.596, 564.557, -1.042, -0.214, -0.631, -8.15);
+  }
+  if (grid == 3)
+  {
+	var geo = transform(phip, lambdap, INT24_AXIS, INT24_ECCENTRIC, height,  WGS84_AXIS, WGS84_ECCENTRIC, -83.901, -98.127, -118.635, 0, 0, 0, 0);
+  }
+  return(geo);
+}
+//===================================================================
+function en2ngr(east, north, grid)
+{
+  var nstr = String(north);
+  var estr = String(east);
+  while (nstr.length < 6) {nstr = "0" + nstr };
+  while (estr.length < 6) {estr = "0" + estr };
+
+  if (grid == "Channel Islands")
+  {
+
+	if (north > 5500000)
+	{
+	  var ngr = "WA " + estr.substring(1, 7) + " " + nstr.substring(2, 7);
+	  document.myform2.ngr.value = ngr;
+	}
+	else if (north < 5500000)
+	{
+	  var ngr = "WV " + estr.substring(1, 7) + " " + nstr.substring(2, 7);
+	  document.myform2.ngr.value = ngr;
+	}
+  }
+
+  if ((grid == "British") || (grid == "Irish"))
+  {
+	var eX = east / 500000;
+	var nX = north / 500000;
+	var tmp = floor(eX)-5.0 * floor(nX)+17.0;
+	nX = 5 * (nX - floor(nX));
+	eX = 20 - 5.0 * floor(nX) + floor(5.0 * (eX - floor(eX)));
+	if (eX > 7.5)
+	  eX = eX + 1;
+	if (tmp > 7.5)
+	  tmp = tmp + 1;
+	var eing = estr;
+	var ning = nstr;
+
+	var l = eing.length;
+	eing = eing.substring(l - 5, l);
+	l = ning.length;
+	ning = ning.substring(l - 5, l);
+	ngr = chr(tmp + 65) + chr(eX + 65) + " " + eing + " " + ning;
+  }
+
+  if (grid == "Irish")
+  {
+	l = ngr.length;
+	ngr = ngr.substring(1, l);
+  }
+  document.myform2.ngr.value = ngr;
+}
+//===================================================================
+function val_ngr()
+{
+  var ngr = document.myform2.ngr.value.toUpperCase();
+  var lenngr = document.myform2.ngr.value.length;
+  locres = document.myform2.locc.selectedIndex;
+  document.myform2.reset();  // clear all displayed data
+  document.myform2.locc.selectedIndex = locres;
+  var i = 0;
+  var t = "";
+
+  // replace spaces
+  while(i < lenngr)
+  {
+	if (ngr.charAt(i) != " ")
+	  t = t + ngr.charAt(i);
+  i++;
+  }
+
+  // check length, then add leading space if odd - Irish?
+  lenngr = t.length;
+  if (lenngr >12)
+  {
+	alert("NGR too long");
+	return;
+  }
+
+  var temp = round(lenngr/2)*2;
+  if (lenngr != temp)
+	ngr = " " + t;  // possible Irish NGR
+  else
+	ngr = t;
+
+  // now format to 12 digits
+  if (ngr.length == 4)
+	t = ngr.substring(0,3) + "5000" + ngr.substring(3) + "5000";
+  if (ngr.length == 6)
+	t = ngr.substring(0,4) + "000" + ngr.substring(4) + "000";
+  if (ngr.length == 8)
+	t = ngr.substring(0,5) + "00" + ngr.substring(5) + "00";
+  if (ngr.length == 10)
+	t = ngr.substring(0,6) + "0" + ngr.substring(6) + "0";
+  if (ngr.length == 12)
+	t = ngr;
+  ngr = t;
+
+  // check ngr has two letters and 10 numbers
+  var myRegExp = /[ A-Z]{2}[0-9]{10}/;
+  if (! myRegExp.test(ngr))
+  {
+	alert("NGR format incorrect")
+	return;
+  }
+
+  // set ngr field
+  t = ngr.substring(0, 2) + " " + ngr.substring(2, 7) + " " + ngr.substring(7, 12);
+
+  if (ngr.charAt(0) == " ")  // Irish
+	document.myform2.ngr.value = t.substring(1,14);
+  else
+	document.myform2.ngr.value = t;
+  conv_ngr_to_ings(ngr);
+}
+//===================================================================
+function conv_ngr_to_ings(ngr)
+{
+  var myRegExp = /^[A-Z][A-Z][0-9]/;
+  if (myRegExp.test(ngr))
+	grid = "British";
+
+  myRegExp = /^ [A-Z][0-9]/;
+  if (myRegExp.test(ngr))
+	grid = "Irish";
+
+  myRegExp = /^W[AV][0-9]/;
+  if (myRegExp.test(ngr))
+	grid = "Channel Islands";
+
+  if (grid == "Channel Islands")
+  {
+	var eci = "5" + ngr.substring(2,7);
+	if (ngr.charAt(1) == "V")
+	  var nci = "54" + ngr.substring(7,12);
+	else
+	  var nci = "55" + ngr.substring(7,12);
+	document.myform2.northings.value = nci;
+	document.myform2.eastings.value = eci;
+	document.myform2.grid.selectedIndex = 3;
+	var east = Number(eci);
+	var north = Number(nci);
+  }
+  if ((grid == "British") || (grid == "Irish"))
+  {
+	document.myform2.grid.selectedIndex = 1;  // British for now
+	var irish = 0;  //not Irish
+	var north = Number(ngr.substring(7));
+	var east = Number(ngr.substring(2,7));
+
+	var t1 = ngr.charCodeAt(0) - 65;
+	if (t1 < 0)
+	{
+	  t1 = 18;	// S for Irish 83-65
+	  irish = 1;
+	}
+
+	if (t1 > 8)
+	  t1 = t1 -1;
+	var t2 = floor(t1 / 5);
+	north = north + 500000 * (3 - t2);
+	east = east + 500000 * (t1 - 5 * t2 - 2);
+
+	t1 = ngr.charCodeAt(1) - 65;
+	if (t1 > 8)
+	  t1 = t1 - 1;
+	t2 = floor(t1 / 5);
+	north = north + 100000 * ( 4 - t2);
+	east = east + 100000 * ( t1 - 5 * t2);
+
+	document.myform2.northings.value = north;
+	document.myform2.eastings.value = east;
+	if (irish == 1)
+	  document.myform2.grid.selectedIndex = 2;  //irish
+  }
+  ne2ll();
+}
+//===================================================================
+
+//end of myform2
+//-------------------------------------------------------------------
+//functions for myform3
+
+//===================================================================
+function geo_constants(ellipsoid)
+{
+// returns ellipsoid values
+ellipsoid_axis = new Array();
+ellipsoid_eccen = new Array();
+ellipsoid_axis[0] = 6377563.396; ellipsoid_eccen[0] = 0.00667054;  //airy
+ellipsoid_axis[1] = 6377340.189; ellipsoid_eccen[1] = 0.00667054;  // mod airy
+ellipsoid_axis[2] = 6378160; ellipsoid_eccen[2] = 0.006694542;  //aust national
+ellipsoid_axis[3] = 6377397.155; ellipsoid_eccen[3] = 0.006674372;  //bessel 1841
+ellipsoid_axis[4] = 6378206.4; ellipsoid_eccen[4] = 0.006768658;  //clarke 1866
+ellipsoid_axis[5] = 6378249.145; ellipsoid_eccen[5] = 0.006803511;  //clarke 1880
+ellipsoid_axis[6] = 6377276.345; ellipsoid_eccen[6] = 0.00637847;  //everest
+ellipsoid_axis[7] = 6377304.063; ellipsoid_eccen[7] = 0.006637847;  // mod everest
+ellipsoid_axis[8] = 6378166; ellipsoid_eccen[8] = 0.006693422;  //fischer 1960
+ellipsoid_axis[9] = 6378150; ellipsoid_eccen[9] = 0.006693422;  //fischer 1968
+ellipsoid_axis[10] = 6378155; ellipsoid_eccen[10] = 0.006693422;  // mod fischer
+ellipsoid_axis[11] = 6378160; ellipsoid_eccen[11] = 0.006694605;  //grs 1967
+ellipsoid_axis[12] = 6378137; ellipsoid_eccen[12] = 0.00669438;  //  grs 1980
+ellipsoid_axis[13] = 6378200; ellipsoid_eccen[13] = 0.006693422;  // helmert 1906
+ellipsoid_axis[14] = 6378270; ellipsoid_eccen[14] = 0.006693422;  // hough
+ellipsoid_axis[15] = 6378388; ellipsoid_eccen[15] = 0.00672267;  // int24
+ellipsoid_axis[16] = 6378245; ellipsoid_eccen[16] = 0.006693422;  // krassovsky
+ellipsoid_axis[17] = 6378160; ellipsoid_eccen[17] = 0.006694542;  // s america
+ellipsoid_axis[18] = 6378165; ellipsoid_eccen[18] = 0.006693422;  // wgs-60
+ellipsoid_axis[19] = 6378145; ellipsoid_eccen[19] = 0.006694542;  // wgs-66
+ellipsoid_axis[20] = 6378135; ellipsoid_eccen[20] = 0.006694318;  // wgs-72
+ellipsoid_axis[21] = 6378137; ellipsoid_eccen[21] = 0.00669438;  //wgs-84
+
+// return values as an object
+var ellipsoid = { axis: ellipsoid_axis[ellipsoid],
+				  eccentricity: ellipsoid_eccen[ellipsoid] };
+return ellipsoid;
+}
+
+//===================================================================
+function val_ll3()
+{
+// get ellipsoid
+var d = document.myform3.ellipsoid.selectedIndex;
+var ellipsoid = geo_constants(d);
+
+if (ellipsoid.axis == 0)
+  {
+  alert("Ellipsoid must be entered");
+  return;
+  }
+var axis = ellipsoid.axis;
+var eccent = ellipsoid.eccentricity;
+
+var latd = document.myform3.latd.value;
+var latm = document.myform3.latm.value;
+var lats = document.myform3.lats.value;
+var latb = document.myform3.latb.selectedIndex;
+var lond = document.myform3.lond.value;
+var lonm = document.myform3.lonm.value;
+var lons = document.myform3.lons.value;
+var lonb = document.myform3.lonb.selectedIndex;
+locres = document.myform3.locc.selectedIndex;
+
+// cope with blank fields
+if (latd == "")
+  {
+  alert("Latitude degrees must be entered");
+  return;
+  }
+
+if (latm == "")
+  latm = "0";
+if (lats == "")
+  lats = "0";
+if (latb == 0)
+  latb = "1";
+if (lond == "")
+  lond = "0";
+if (lonm == "")
+  lonm = "0";
+if (lons == "")
+  lons = "0";
+if (lonb == 0)
+  lonb = 1;
+
+//validate
+//validate
+var valid = validate_dms(latd, latm, lats, latb, lonm, lond, lons, lonb);
+if (valid == 0)
+{
+ alert("Invalid degrees, minutes or seconds");
+ return;
+}
+
+// clear form and show entered values
+document.myform3.reset();
+document.myform3.ellipsoid.selectedIndex = d;
+document.myform3.latd.value = latd;
+document.myform3.latm.value = latm;
+document.myform3.lats.value = lats;
+document.myform3.lond.value = lond;
+document.myform3.lonm.value = lonm;
+document.myform3.lons.value = lons;
+document.myform3.latb.selectedIndex = latb;  // default N
+document.myform3.lonb.selectedIndex = lonb;  // default W
+document.myform3.locc.selectedIndex = locres;
+
+var lat = Number(latd);
+lat = lat + Number(latm) / 60;
+lat = lat + Number(lats) / 3600;
+if (latb == 2)  // S
+  lat = lat * -1;
+var lon = Number(lond);
+lon = lon + Number(lonm) / 60;
+lon = lon + Number(lons) / 3600;
+if (lonb == 1)  // W
+  lon = lon * -1;
+
+if (lat >= 84 || lat <= -80)
+  {
+  alert("UTM latitudes should be between 84N and 80S\nCalculation will proceed anyway as locator will be valid.");
+  }
+
+calc_utm(lat, lon, axis, eccent);
+loc = calcloc(lon, lat)
+var locy = loc.substring(0, 6 + 2 * locres);
+document.myform3.locator.value = locy;
+}
+
+//===================================================================
+function calc_utm(lat, lon, axis, eccent)
+{
+var k0 = 0.9996;
+var latrad = lat * deg2rad;
+var longrad = lon * deg2rad;
+var zonenum = floor((lon + 180) / 6) + 1;
+if (lat >= 56.0 && lat < 64.0 && lon >= 3.0 && lon < 12.0 )
+  zonenum = 32;
+// Special zones for Svalbard
+if( lat >= 72.0 && lat < 84.0 )
+  {
+  if (lon >= 0.0  && lon <  9.0 ) zonenum = 31;
+  else if ( lon >= 9.0  && lon < 21.0 ) zonenum = 33;
+  else if ( lon >= 21.0 && lon < 33.0 ) zonenum = 35;
+  else if ( lon >= 33.0 && lon < 42.0 ) zonenum = 37;
+ }
+
+var lonorig = (zonenum - 1) * 6 - 180 + 3;  //+3 puts origin in middle of zone
+var lonorigrad = lonorig * deg2rad;
+
+//get letter
+var letter = get_zoneletter(lat);
+
+var eccPrimeSquared = (eccent) / (1 - eccent);
+
+//calculate
+var N = axis / sqrt(1 - eccent * sin(latrad) * sin(latrad));
+var T = tan(latrad) * tan(latrad);
+var C = eccPrimeSquared * cos(latrad) * cos(latrad);
+var A = cos(latrad) * (longrad - lonorigrad);
+var M = axis * ((1 - eccent / 4 - 3 * eccent * eccent / 64 - 5 * eccent * eccent * eccent / 256) * latrad - (3 * eccent / 8 + 3 * eccent * eccent / 32 + 45 * eccent * eccent *eccent / 1024) * sin(2 * latrad) + (15 * eccent * eccent / 256 + 45 * eccent * eccent * eccent / 1024) * sin(4 * latrad) - (35 * eccent * eccent * eccent / 3072) * sin(6 * latrad));
+
+var easting = (k0 * N * (A + (1 - T + C) * A * A * A / 6 + (5 - 18 * T + T * T + 72 * C - 58 * eccPrimeSquared) * A * A * A * A * A / 120) + 500000.0);
+var northing = (k0 * (M + N * tan(latrad) * (A * A / 2 + (5 - T + 9 * C + 4 * C * C) * A * A * A * A / 24 + (61 - 58 * T + T * T + 600 * C - 330 * eccPrimeSquared) * A * A * A * A * A * A / 720)));
+if (lat < 0)
+  northing += 10000000.0; //10000000 meter offset for southern hemisphere
+
+// round up
+easting = floor(easting);
+northing = floor(northing);
+
+// correlate index with letter
+var cx ="C01D02E03F04G05H06J07K08L09M10N11P12Q13R14S15T16U17V18W19X20";
+var cxi = cx.indexOf(letter,0);
+var zl = Number(cx.substr(cxi + 1, 2));
+
+document.myform3.north.value = northing;
+document.myform3.east.value = easting;
+document.myform3.zone.value = zonenum;
+document.myform3.zletter.selectedIndex = zl;
+}
+
+//===================================================================
+function val_utm()
+{
+var zone = document.myform3.zone.value;
+var northing = document.myform3.north.value;
+var easting = document.myform3.east.value;
+var d = document.myform3.ellipsoid.selectedIndex;
+var zl = document.myform3.zletter.selectedIndex;
+locres = document.myform3.locc.selectedIndex;
+
+if (zone == "" || zl == 0)
+  {
+  alert("You must enter a zone number and letter");
+  return;
+  }
+if (zone == 0 || zone > 60)
+  {
+  alert("Zone number is out of range.\nMust be between 1 and 60.");
+  return;
+  }
+if (isNaN(northing))
+  {
+  alert("Northing should be numbers only,\nno letters or spaces.");
+  return;
+  }
+if (isNaN(easting))
+  {
+  alert("Easting should be numbers only,\nno letters or spaces.");
+  return;
+  }
+if (northing < 0 || northing > 10000000)
+  {
+  alert("Northing value is out of range");
+  return;
+  }
+if (easting < 160000 || easting > 834000)
+  {
+  alert("Easting value is out of range");
+  return;
+  }
+ellipsoid = geo_constants(d);
+if (ellipsoid.axis == 0)
+  {
+  alert("Ellipsoid must be entered");
+  return;
+  }
+
+document.myform3.reset();  //clear form and show entered values
+document.myform3.zone.value = zone;
+document.myform3.north.value = northing;
+document.myform3.east.value = easting;
+document.myform3.ellipsoid.selectedIndex = d;
+document.myform3.zletter.selectedIndex = zl;
+document.myform3.locc.selectedIndex = locres;
+
+var axis = ellipsoid.axis;
+var eccent = ellipsoid.eccentricity;
+var k0 = 0.9996;
+
+var e1 = (1 - sqrt(1 - eccent)) / (1 + sqrt(1 - eccent));
+var x = easting - 500000.0; //remove 500,000 meter offset for longitude
+var y = northing;
+
+// correlate index with letter
+var cx ="1C2D3E4F5G6H7J8K9L10M11N12P13Q14R15S16T17U18V19W20X";
+var cxl = String(zl);
+var cxi = cx.indexOf(cxl,0);
+var zletter = cx.charAt(cxi + cxl.length);
+
+var nhemisphere = 0;
+if (zletter >= "N")
+  nhemishere = 1;
+else
+  y -= 10000000.0; //remove 10,000,000 meter offset used for southern hemisphere
+
+var longorig = (zone - 1) * 6 - 180 + 3;  //+3 puts origin in middle of zone
+
+var eccPrimeSquared = (eccent) / (1-eccent);
+var M = y / k0;
+var mu = M / (axis * (1 - eccent / 4 - 3 * eccent * eccent / 64 - 5 * eccent * eccent * eccent / 256));
+var phi1Rad = mu + (3 * e1 / 2 - 27 * e1 * e1 * e1 / 32) * sin(2 * mu) + (21 * e1 * e1 / 16 - 55 * e1 * e1 * e1 * e1 / 32) * sin(4 * mu) + (151 * e1 * e1 * e1 / 96) * sin(6 * mu);
+var phi1 = phi1Rad * rad2deg;
+var N1 = axis / sqrt(1 - eccent * sin(phi1Rad) * sin(phi1Rad));
+
+var T1 = tan(phi1Rad) * tan(phi1Rad);
+var C1 = eccPrimeSquared * cos(phi1Rad) * cos(phi1Rad);
+var R1 = axis * (1 - eccent) / pow(1-eccent * sin(phi1Rad) * sin(phi1Rad), 1.5);
+var D = x / (N1 * k0);
+var lat = phi1Rad - (N1 * tan(phi1Rad) / R1) * (D * D / 2 - (5 + 3 * T1 + 10 * C1 - 4 * C1 * C1 - 9 * eccPrimeSquared) * D * D * D * D / 24 + (61 + 90 * T1 + 298 * C1 + 45 * T1 * T1 - 252 * eccPrimeSquared - 3 * C1 * C1) * D * D * D * D * D * D / 720);
+lat = lat * rad2deg;
+var lon = (D - (1 + 2 * T1 + C1) * D * D * D / 6 + (5 - 2 * C1 + 28 * T1 - 3 * C1 * C1 + 8 * eccPrimeSquared + 24 * T1 * T1) * D * D * D * D * D / 120) / cos(phi1Rad);
+lon = longorig + lon * rad2deg;
+todms3(lat, lon);
+loc = calcloc(lon,lat)
+var locy = loc.substring(0, 6 + 2 * locres);
+document.myform3.locator.value = locy;
+}
+
+//===================================================================
+function get_zoneletter(lat)
+{
+//This routine determines the correct UTM letter designator for the given latitude
+//returns 'Z' if latitude is outside the UTM limits of 84N to 80S
+var zoneletter;
+
+if ((84 >= lat) && (lat >= 72)) zoneletter = 'X';
+else if ((72 > lat) && (lat >= 64)) zoneletter = 'W';
+else if ((64 > lat) && (lat >= 56)) zoneletter = 'V';
+else if ((56 > lat) && (lat >= 48)) zoneletter = 'U';
+else if ((48 > lat) && (lat >= 40)) zoneletter = 'T';
+else if ((40 > lat) && (lat >= 32)) zoneletter = 'S';
+else if ((32 > lat) && (lat >= 24)) zoneletter = 'R';
+else if ((24 > lat) && (lat >= 16)) zoneletter = 'Q';
+else if ((16 > lat) && (lat >= 8)) zoneletter = 'P';
+else if (( 8 > lat) && (lat >= 0)) zoneletter = 'N';
+else if (( 0 > lat) && (lat >= -8)) zoneletter = 'M';
+else if ((-8> lat) && (lat >= -16)) zoneletter = 'L';
+else if ((-16 > lat) && (lat >= -24)) zoneletter = 'K';
+else if ((-24 > lat) && (lat >= -32)) zoneletter = 'J';
+else if ((-32 > lat) && (lat >= -40)) zoneletter = 'H';
+else if ((-40 > lat) && (lat >= -48)) zoneletter = 'G';
+else if ((-48 > lat) && (lat >= -56)) zoneletter = 'F';
+else if ((-56 > lat) && (lat >= -64)) zoneletter = 'E';
+else if ((-64 > lat) && (lat >= -72)) zoneletter = 'D';
+else if ((-72 > lat) && (lat >= -80)) zoneletter = 'C';
+else zoneletter = chr(32 + 66); //This is here as an error flag to show that the Latitude is outside the UTM limits
+return zoneletter;
+}
+
+//===================================================================
+function todms3(lat, lon)
+// convert decimal degrees to dms
+{
+var latbrg = 1;
+var lonbrg = 2;
+if (lat < 0)
+  latbrg = 2
+if (lon < 0)
+  lonbrg = 1;
+var tlat = Math.abs(lat) + 0.5 / 36000;  // round up 0.5 sec
+var tlon = Math.abs(lon) + 0.5 / 36000;
+
+var deglat = floor(tlat);
+
+var t = (tlat - deglat) * 60;
+var minlat = floor(t);
+
+var seclat = (t - minlat) * 60;
+seclat = floor(seclat * 10) / 10;  //  works in js 1.4
+// seclat = seclat.toFixed(1);  // 1 decimal places js 1.5 and later
+
+var deglon = floor(tlon);
+
+t = (tlon - deglon) * 60;
+var minlon = floor(t);
+
+var seclon = (t - minlon) * 60;
+seclon = floor(seclon * 10) /10;  // js 1.4
+// seclon = seclon.toFixed(1);  // js 1.5 and later
+
+document.myform3.latd.value = deglat;
+document.myform3.latm.value = minlat;
+document.myform3.lats.value = seclat;
+document.myform3.latb.selectedIndex = latbrg;
+document.myform3.lond.value = deglon;
+document.myform3.lonm.value = minlon;
+document.myform3.lons.value = seclon;
+document.myform3.lonb.selectedIndex = lonbrg;
+}
+
+//===================================================================
+function conv_loc_to_ll3()
+{
+var locator = document.myform3.locator.value.toUpperCase();
+var locx = locator;
+
+locator = expand_loc(locator);
+
+if (validate(locator) == 0)
+  {
+  alert("Locator format incorrect");
+  return;
+  }
+
+document.myform3.reset();
+
+var ellipsoid = geo_constants(21);  // get data for WGS-84
+var axis = ellipsoid.axis;
+var eccent = ellipsoid.eccentricity;
+
+document.myform3.locator.value = locx;
+document.myform3.ellipsoid.selectedIndex = 21;
+
+geo = conv_loc_to_deg(locator);
+var lon = geo.longitude;
+var lat = geo.latitude;
+
+todms3(lat, lon);
+calc_utm(lat, lon, axis, eccent);
+}
+// end of myform3 functions
+
+//-------------------------------------------------------------------
+function validate_dms(latd, latm, lats, latb, lonm, lond, lons, lonb)
+{
+ var valid = 1;
+ if (abs(Number(latd)) >= 90)
+  valid = 0;
+ if (Number(latm) >= 60)
+  valid = 0;
+ if (Number(lats) >= 60)
+  valid = 0;
+ if (abs(Number(lond)) >= 180)
+  valid = 0;
+ if (Number(lonm) >= 60)
+  valid = 0;
+ if (Number(lons) >= 60)
+  valid = 0;
+
+ return(valid);
+}
+//-------------------------------------------------------------------
+
+function validate(locator)
+{
+ if (locator.length != 10)
+  return(0);
+
+ // check locator format
+ var myRegExp = /[A-R]{2}[0-9]{2}[A-X]{2}[0-9]{2}[A-X]{2}/;
+ if (! myRegExp.test(locator))
+ return(0);
+}
+//-------------------------------------------------------------------
+
+
+//===================================================================
+function usage2()
+{
+window.open('usage.htm', 'usage', "resizable=yes, menubar=no, scrollbars=yes, width=600, height=600");
+}
+
+//===================================================================
+function usage3()
+{
+window.open('utmusage.htm', 'utmusage', "resizable=yes, menubar=no, scrollbars=yes, width=600, height=600");
+}
+
+//===================================================================
+
+//end of myform3
+//-------------------------------------------------------------------
+// Maths functions
+
+function mod(y, x)
+{
+if (y >= 0)
+  return y - x * floor(y / x);
+else
+  return y + x * (floor(-y / x) + 1.0);
+}
+
+function atan2(y, x)
+{
+	return Math.atan2(y, x);
+}
+
+function sqrt(x)
+{
+	return Math.sqrt(x);
+}
+
+function tan(x)
+{
+	return Math.tan(x);
+}
+
+function sin(x)
+{
+	return Math.sin(x);
+}
+
+function cos(x)
+{
+	return Math.cos(x);
+}
+
+function acos(x)
+{
+	return Math.acos(x);
+}
+
+function floor(x)
+{
+	return Math.floor(x);
+}
+
+function round(x)
+{
+	return Math.round(x);
+}
+
+function ceil(x)
+{
+	return Math.ceil(x)
+}
+
+function ln(x)
+{
+	return Math.log(x);
+}
+
+function abs(x)
+{
+	return Math.abs(x);
+}
+
+function pow(x, y)
+{
+	return Math.pow(x, y);
+}
+
+function atan(x)
+{
+	return Math.atan(x);
+}
+
+function chr(x)
+{
+return String.fromCharCode(x);
+}
+
+function round(x)
+{
+	return Math.round(x);
+}
+
+//-->
+</script>
+
+<!-- Start of main table for distance calculator-->
+</head><body><table summary="Main table for page layout" align="center">
+<tbody>
+<tr valign="top">
+<td><br>
+<div class="toggle">
+<form name="myform">
+<table summary="Table for form elements">
+<tbody>
+<tr>
+<td width="37%">Ваш локатор</td>
+<td class="c" width="28%"><input class="pre" onkeypress="return numlet(event)" type="text" name="loc1" size="16" maxlength="10"></td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>корреспондента</td>
+<td class="c"><input class="pre" onkeypress="return numlet(event)" type="text" name="loc2" size="16" maxlength="10"></td>
+<td>
+<p align="center"><input onclick="find_dist()" type="button" value="Подсчитать" class="button3"></p></td>
+</tr>
+</tbody>
+</table>
+<table summary="Results" width="442">
+<tbody>
+<tr>
+<td width="105">&nbsp;</td>
+<td class="d">Градусы</td>
+<td class="d">Километры</td>
+<td class="d">Мор. мили</td>
+<td class="d">Сух. мили</td>
+</tr>
+<tr>
+<td width="105">По дуге:</td>
+<td class="c"><input class="code" type="text" name="gc_deg" readonly="readonly" size="6"></td>
+<td class="c"><input class="code" type="text" name="gc_km" readonly="readonly" size="8"></td>
+<td class="c"><input class="code" type="text" name="gc_mi" readonly="readonly" size="8"></td>
+<td class="c"><input class="code" type="text" name="gc_sm" readonly="readonly" size="8"></td>
+</tr>
+<tr>
+<td width="105">Прямая:</td>
+<td class="c"><input class="code" type="text" name="rl_deg" readonly="readonly" size="6"></td>
+<td class="c"><input class="code" type="text" name="rl_km" readonly="readonly" size="8"></td>
+<td class="c"><input class="code" type="text" name="rl_mi" readonly="readonly" size="8"></td>
+<td class="c"><input class="code" type="text" name="rl_sm" readonly="readonly" size="8"></td>
+</tr>
+</tbody>
+</table><br>
+<input type="reset" value="Сброс" class="button3"></form></div>
+<br>
+<br>
+</td></tr></tbody></table><div></div></body></html>

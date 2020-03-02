@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>WiFi client setup</title>
+    <style type="text/css">
+   .setupbtn{
+        width: 100px;
+    }
+   #td{
+       border: 0px;
+   }
+  </style>
+ </head>
+ <body>
+
+  <script>
+	window.onload=function(){
+	    var req = new XMLHttpRequest();
+        req.open('GET', '/wifi_cli_data', true); 
+        req.onreadystatechange = function() {
+        if (req.readyState == 4) {
+			var data = JSON.parse(req.responseText);
+			document.getElementById("ssid").innerHTML = data.ssid;
+			document.getElementById("password").innerHTML = data.password;
+	        }
+	    }
+		req.send(null);
+    }
+	
+	function set_ssid(_ssid, _passwd){
+        var req_str = "/wificliset?ssid="+_ssid+"&password="+_passwd;
+		var request = new XMLHttpRequest();
+		request.open('GET', req_str, true );
+		request.send(null);
+        alert("Измененя вступят в силу после перезагрузки. Пожалуйта перезагрузите устройство.");
+   }
+   
+  </script>
+ 
+  <div align="center">
+  <h2>WiFi Client setup</h2>
+   <table border="1" cellpadding="5" cellspacing="4">
+    <tr>
+     <td>SSID</td><td><input id="ssid" value="{{ssid}}" class="form-control" pattern="[0-9a-zA-Z.]{1,15}" placeholder="Name of WiFi network"></td>
+    </tr>
+    <tr>
+     <td>Password</td><td><input id="password" value="{{password}}" pattern=".{8,15}" onfocus="this.type='text'" type="password" class="form-control" placeholder="Password"></td>
+    </tr>
+   </table>
+   <br>
+   <input type="submit" value="Сохранить" onclick='set_ssid(document.getElementById("ssid").value, document.getElementById("password").value)' >
+   <br>
+   
+  </div>
+   
+ </body>
+</html>
