@@ -19,7 +19,7 @@
 #define RSSI_LOW_LEVEL -90
 #define AZ_ACCURACY 2                                                    // точность установки азимута
 
-String ssid     = "DIR-320NRU";
+String ssid     = "DIR-320";
 String password = "12345678";
 
 int out_pins[] = {PIN_PRIVOD_LEFT, PIN_PRIVOD_RIGHT, PIN_LED_WIFI_STATUS, PIN_LED_LOW_RSSI};
@@ -99,7 +99,7 @@ void setup() {
   }
   else {
     WiFi.mode(WIFI_AP);
-    WiFi.softAP(F("ESPAP"));
+    WiFi.softAP(F("ESPAP"), F("87654321"));
     IPAddress myIP = WiFi.softAPIP();
     Serial.println(F("----"));
     Serial.println(F("\nStarting AP, client is off"));
