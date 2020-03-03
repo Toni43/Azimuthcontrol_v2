@@ -74,7 +74,7 @@
 	
 	function setAzimuth(azimuthToRotate){
 	    var inertion = parseInt(document.getElementById("inertion").value);
-		if (abs(azimuth - azimuthToRotate) > inertion + 1) {
+		if (Math.abs(azimuth - azimuthToRotate) > inertion + 1) {
 		    if ( azimuth > azimuthToRotate ) azTmp = parseInt(azimuthToRotate) + inertion;
 		    else azTmp = azimuthToRotate - inertion;
 		}
