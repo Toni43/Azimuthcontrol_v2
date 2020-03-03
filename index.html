@@ -73,20 +73,15 @@
 	setInterval(getData, 500);
 	
 	function setAzimuth(azimuthToRotate){
-	    var inertion = parseInt(document.getElementById("inertion").value);
-		if (abs(azimuth - azimuthToRotate) > inertion + 1) {
-		    if ( azimuth > azimuthToRotate ) azTmp = parseInt(azimuthToRotate) + inertion;
-		    else azTmp = azimuthToRotate - inertion;
-		}
-		else azTmp = azimuthToRotate;
-	
+	    if (azimuth > azimuthToRotate) azTmp = azimuthToRotate + parseInt(document.getElementById("inertion").value);
+		else azTmp = azimuthToRotate - parseInt(document.getElementById("inertion").value);
 	    if ((azTmp >= 0) && (azTmp <= 360 ) ){ 
 	        var request = new XMLHttpRequest();
 		    var req_str = "/setazimuth?azimuth=" + azTmp;
 		    request.open('GET', req_str, true );
 		    request.send(null);
 		}
-		else alert("Значение азимута должно быть от 0 до 360!");
+		else alert("Значение азимута должно быть от 0 до 360!" + document.getElementById("inertion").value);
 		document.getElementById("status").innerHTML = azTmp;
 		setTimeout(offmsg = function(){document.getElementById("status").innerHTML = " "}, 4000);
 	}
@@ -131,7 +126,7 @@
        <input id="neededazimuth" type="text" size="5" pattern="[0-9]{1,3}">
 	   <input type="submit" value="Повернуть" onclick='setAzimuth(document.getElementById("neededazimuth").value)'>
 	   <input type="submit" value="STOP!" onclick='stop()'>
-	   <input id="inertion" type="text" size="5" pattern="\d [0-9]" value="0">Инерция привода °
+	   <input id="inertion" type="text" size="5" pattern="[0-9]{,1}" value="0">Инерция привода
        </p>
 	   
 	   <table summary="Main table for page layout" align="center">
