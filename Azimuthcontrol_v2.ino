@@ -1,8 +1,7 @@
 /*
    Версия 2
-   расчёт азимута по максимальному напряжению на датчике (360 градусов)
-   и минимальному напряжению на датчике (0 градусов)
-   Значения сохраняются в EEPROM
+   расчёт азимута по максимальному и минимальному напряжению на датчике
+   Настройки сохраняются в фалйе .json
 
 */
 #include <ESP8266WiFi.h>                                                // Библиотека для создания Wi-Fi подключения (клиент или точка доступа)
@@ -183,13 +182,22 @@ void setNeededAzimuth() {
 
 // функция вращения антенны
 void rotateAnt() {
+  //перкращение вращения привода при достижении заданного азимута
   if ( (currentAzimuth >= (needAzimuth - 1)) && (currentAzimuth <= (needAzimuth + 1)) ) {
     digitalWrite(PIN_PRIVOD_RIGHT, LOW);
     digitalWrite(PIN_PRIVOD_LEFT, LOW);
     needRotateAnt = false;
     return;
   }
-
+  
+  //перкращение вращения привода для предотвращения перекручивания кабеля
+  if ( (currentAzimuth > 365) || (currentAzimuth < -5) ) {
+    digitalWrite(PIN_PRIVOD_RIGHT, LOW);
+    digitalWrite(PIN_PRIVOD_LEFT, LOW);
+    needRotateAnt = false;
+    return;
+  }
+  
   if ( (currentAzimuth <= needAzimuth) && (digitalRead(PIN_PRIVOD_RIGHT) == LOW ) ) {
     digitalWrite(PIN_PRIVOD_RIGHT, HIGH);
   }
